@@ -8,3 +8,8 @@ This is a data exploration project that examines the death and vaccination rates
 
 ### Data Source
 - [OurWorldinData.org Covid Deaths Dataset](https://ourworldindata.org/covid-deaths)
+
+Because the main source data is updated daily, the coviddeaths and covidvaccinations files are too large to add to this repository, but the information from the queries is accessable.  
+
+
+

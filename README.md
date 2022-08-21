@@ -13,7 +13,7 @@ Because the main source data is updated daily, the coviddeaths and covidvaccinat
 
 ## SQL Walkthrough
 ### coviddeaths Table
-In the coviddeaths table, the main columns being examined are `location`, `date`, `total_cases`, `new_cases`, `total_deaths`, and `population`. `location` contains a list of every country with recorded covid data, as well as continents and income level.
+In the coviddeaths table, the main columns being examined are `location`, `date`, `total_cases`, `new_cases`, `total_deaths`, and `population`. `location` contains a list of every country that has recorded covid data, as well as continents and income level.
 
 ```SQL
 SELECT location, date, total_cases, new_cases, total_deaths, population

@@ -61,7 +61,8 @@ WHERE continent IS NOT NULL
 Query 3 examines the countries with the highest infection rates as a percent of the population.
 
 ```SQL
-SELECT location, population, MAX(total_cases) AS HighestInfectionCount, MAX((total_cases/population))*100 AS PercentPopulationInfected
+SELECT location, population, MAX(total_cases) AS HighestInfectionCount, 
+  MAX((total_cases/population))*100 AS PercentPopulationInfected
 FROM `portfolioproject-359316.covid19.coviddeaths`
 WHERE continent IS NOT NULL
   GROUP BY location, population
@@ -69,5 +70,65 @@ WHERE continent IS NOT NULL
  ```
  >Results in repository: [CountryInfectionRate.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/CountryInfectionRate.csv)
 
+### Query 4
+Query 4 examines countries with the highest death counts as a total sum by taking the `MAX` of `total_deaths`, which is the most recent entry.
 
+```SQL
+SELECT location, MAX(Total_deaths) AS TotalDeathCount
+FROM `portfolioproject-359316.covid19.coviddeaths`
+WHERE continent IS NOT NULL
+  GROUP BY location
+  ORDER BY TotalDeathCount DESC 
+```
+>Results in repository: [CountryDeathCount.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/CountryDeathCount.csv)
 
+### Query 5
+Query 5 examines continents with the highest death counts as a total sum, the same way as Query 4, but instead with the `WHERE` clause `continent IS NULL`.  The clauses `location NOT LIKE '%income%'` and `location NOT LIKE '%Union%'` are to ignore income level entries and the European Union entry. 
+
+```SQL
+SELECT location, MAX(total_deaths) AS total_death_count
+FROM `portfolioproject-359316.covid19.coviddeaths`
+WHERE location NOT LIKE '%income%' 
+  AND location NOT LIKE '%Union%'
+  AND continent IS NULL 
+  GROUP BY location
+  ORDER BY total_death_count DESC
+```
+>Results in repository: [ContinentDeathCount.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/ContinentDeathCount.csv)
+
+Results also below:
+
+| location | total_death_count |
+|---------|-------|
+|World|6451050|
+|Europe|1900463|
+North America|1489924|
+Asia|1464328|
+South America|1321971|
+Africa|256429|
+Oceania|17920|
+International|15|
+
+### Query 6
+Query 6 examines the total death count based on income level around the world.  This is similar to Query 5, only we use the `WHERE` clause `location LIKE '%income%'`.
+
+```SQL
+SELECT location, MAX(total_deaths) AS total_death_count
+FROM `portfolioproject-359316.covid19.coviddeaths`
+WHERE location LIKE '%income%' 
+  AND location NOT LIKE '%Union%'
+  AND continent IS NULL 
+  GROUP BY location
+  ORDER BY total_death_count DESC
+ ```
+  
+>Results in repository: [IncomeDeathCount](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/IncomeDeathCount.csv)
+
+Results also below:
+
+| location | total_death_count |
+|---------|-------|
+Upper middle income	|2560751|
+High income	|2524434|
+Lower middle income	|1322311|
+Low income	|43475|

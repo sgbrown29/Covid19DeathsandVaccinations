@@ -91,9 +91,8 @@ WHERE
 
 
 --View of countries with highest vaccination rates
-SELECT location, MAX(percent_single_dose) AS percent_single_dose, MAX(percent_fully_vaccinated) AS percent_fully_vaccinated
+SELECT location, population, MAX(percent_single_dose) AS percent_single_dose, MAX(percent_fully_vaccinated) AS percent_fully_vaccinated
 FROM `portfolioproject-359316.covid19.PercentPopulationVaccinated`
 WHERE continent IS NOT NULL
-  GROUP BY location
+  GROUP BY location, population
   ORDER BY percent_fully_vaccinated DESC
-

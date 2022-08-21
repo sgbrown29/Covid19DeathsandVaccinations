@@ -1,10 +1,10 @@
 --View of essential information in coviddeaths table
-SELECT location, date, total_cases, new_cases, total_deaths, population
+SELECT location, date, population, total_cases, new_cases, total_deaths
 FROM `portfolioproject-359316.covid19.coviddeaths`
   ORDER BY 1, 2
 
 --View of essential information in covidvaccinations table
-SELECT location, date, total_tests, new_tests, people_vaccinated, people_fully_vaccinated, population
+SELECT location, date, population, total_tests, new_tests, people_vaccinated, people_fully_vaccinated
 FROM `portfolioproject-359316.covid19.covidvaccinations`
   ORDER BY 1, 2
 
@@ -18,7 +18,7 @@ WHERE continent IS NOT NULL
 
 --Looking at total cases vs. population
 --Percent of Population that got covid
-SELECT location, date, total_cases, population, (total_cases/population)*100 AS  infection_percentage
+SELECT location, date, population, total_cases, (total_cases/population)*100 AS  infection_percentage
 FROM `portfolioproject-359316.covid19.coviddeaths`
 WHERE continent IS NOT NULL
   ORDER BY 1, 2

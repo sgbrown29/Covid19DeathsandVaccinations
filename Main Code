@@ -60,15 +60,6 @@ WHERE location LIKE '%income%'
   ORDER BY total_death_count DESC
 
 
---Global numbers by day per continent
-SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS death_percentage
-FROM `portfolioproject-359316.covid19.coviddeaths`
-WHERE continent IS NULL 
-  AND location NOT LIKE '%income%' 
-  AND location NOT LIKE '%Union%'
-  ORDER BY 1, 2
-
-
 --Looking at total population vs. new doses, partition creates a rolling count of doses per country that resets for every change of country in the list.  Output is then saved as a table within covid 19 dataset.  
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations AS new_doses, SUM(new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_doses
 FROM `portfolioproject-359316.covid19.coviddeaths` dea

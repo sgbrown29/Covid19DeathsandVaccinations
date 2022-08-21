@@ -10,7 +10,7 @@ FROM `portfolioproject-359316.covid19.covidvaccinations`
 
 
 --Looking at total_cases vs. total_deaths, and deaths as a percent of the total cases. likelihood of getting dying from covid that day.
-SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS DeathPercentage
+SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS death_percentage
 FROM `portfolioproject-359316.covid19.coviddeaths`
 WHERE continent IS NOT NULL
   ORDER BY 1,2
@@ -104,3 +104,7 @@ FROM `portfolioproject-359316.covid19.PercentPopulationVaccinated`
 WHERE continent IS NOT NULL
   GROUP BY location, population
   ORDER BY percent_fully_vaccinated DESC
+
+
+
+

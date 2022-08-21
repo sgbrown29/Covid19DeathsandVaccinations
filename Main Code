@@ -3,8 +3,13 @@ SELECT location, date, total_cases, new_cases, total_deaths, population
 FROM `portfolioproject-359316.covid19.coviddeaths`
   ORDER BY 1, 2
 
-  
---Looking at total_cases vs. total_deaths, likelihood of getting covid in your country
+--View of essential information in covidvaccinations table
+SELECT location, date, total_tests, new_tests, population
+FROM `portfolioproject-359316.covid19.covidvaccinations`
+  ORDER BY 1, 2
+
+
+--Looking at total_cases vs. total_deaths, and deaths as a percent of the total cases. likelihood of getting dying from covid that day.
 SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS DeathPercentage
 FROM `portfolioproject-359316.covid19.coviddeaths`
 WHERE continent IS NOT NULL
@@ -13,7 +18,7 @@ WHERE continent IS NOT NULL
 
 --Looking at total cases vs. population
 --Percent of Population that got covid
-SELECT location, date, total_cases, population, (total_cases/population)*100 AS DeathPercentage
+SELECT location, date, total_cases, population, (total_cases/population)*100 AS  InfectionPercentage
 FROM `portfolioproject-359316.covid19.coviddeaths`
 WHERE continent IS NOT NULL
   ORDER BY 1, 2
@@ -46,7 +51,7 @@ WHERE location NOT LIKE '%income%'
 
 
 --Death Count by world income level
-SELECT location, MAX(Total_deaths) AS TotalDeathCount
+SELECT location, MAX(total_deaths) AS TotalDeathCount
 FROM `portfolioproject-359316.covid19.coviddeaths`
 WHERE location LIKE '%income%' 
   AND location NOT LIKE '%Union%'
@@ -64,25 +69,31 @@ WHERE continent IS NULL
   ORDER BY 1, 2
 
 
---Looking at total population vs. vaccinations, partition creates a rolling count per country that resets for every change of country in the list.  Output is then saved as a table within covid 19 dataset.  
-SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations, SUM(new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS RollingPeopleVaccinated
+--Looking at total population vs. new doses, partition creates a rolling count of doses per country that resets for every change of country in the list.  Output is then saved as a table within covid 19 dataset.  
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations AS new_doses, SUM(new_vaccinations) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_doses
 FROM `portfolioproject-359316.covid19.coviddeaths` dea
 JOIN`portfolioproject-359316.covid19.covidvaccinations` vac
   ON dea.location = vac.location 
   AND dea.date = vac.date
 WHERE
   dea.continent IS NOT NULL
-ORDER BY 2, 3
+  ORDER BY 2, 3
+
+--Join that creates a table based on population vs. single dose vaccinations and people fully vaccinated, when saved, creates the PercentPopulationVaccinated table
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.people_vaccinated as people_single_dose, vac.people_fully_vaccinated, (vac.people_vaccinated/dea.population)*100 AS percent_single_dose, (vac.people_fully_vaccinated/dea.population)*100 AS percent_fully_vaccinated
+FROM `portfolioproject-359316.covid19.coviddeaths` dea
+JOIN`portfolioproject-359316.covid19.covidvaccinations` vac
+  ON dea.location = vac.location 
+  AND dea.date = vac.date
+WHERE
+  dea.continent IS NOT NULL
+  ORDER BY 2, 3
 
 
---Adds a column in percentpopulationvaccinated that has the percent of population vaccinated per country
-SELECT *, (RollingPeopleVaccinated/population)*100 AS percent_vaccinated
-FROM `portfolioproject-359316.covid19.percentpopulationvaccinated`
-
-
---View of PercentPopulationVaccinated
-SELECT *
-FROM `portfolioproject-359316.covid19.percentpopulationvaccinated`
+--View of countries with highest vaccination rates
+SELECT location, MAX(percent_single_dose) AS percent_single_dose, MAX(percent_fully_vaccinated) AS percent_fully_vaccinated
+FROM `portfolioproject-359316.covid19.PercentPopulationVaccinated`
 WHERE continent IS NOT NULL
-ORDER BY 2, 3
+  GROUP BY location
+  ORDER BY percent_fully_vaccinated DESC
 

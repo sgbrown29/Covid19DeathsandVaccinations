@@ -20,7 +20,7 @@ SELECT location, date, total_cases, new_cases, total_deaths, population
 FROM `portfolioproject-359316.covid19.coviddeaths`
   ORDER BY 1, 2
 ```
->Results in repository: [coviddeathsessential.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/coviddeathsessential.csv)
+>Results in repository: [CovidDeathsEssential.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/CovidDeathsEssential.csv)
 
 ### covidvaccinations Table
 
@@ -31,7 +31,7 @@ SELECT location, date, total_tests, new_tests, population
 FROM `portfolioproject-359316.covid19.covidvaccinations`
   ORDER BY 1, 2
 ```
->Results in repository: [covidvaccinationsessential.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/covidvaccinationsessential.csv)
+>Results in repository: [CovidVaccinationsEssential.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/CovidVaccinationsEssential.csv)
 
 ### Query 1
 The first query examines the cases and deaths per country, and creates a % chance of death based on the total case count.  This shows your daily chances of dying should you become infected for each country.  
@@ -42,8 +42,32 @@ FROM `portfolioproject-359316.covid19.coviddeaths`
 WHERE continent IS NOT NULL
   ORDER BY 1,2
  ```
-Because `location` has entries for each continent and income level, such as "Africa, North America, Low Income, etc.", we use the WHERE clause `continent IS NOT NULL`, which removes these locations and only includes country names in the final result. `ORDER BY 1,2` allows the results to be arranged by alphabetically by location and chronologically by date.
+ >Results in repository: [DailyDeathPercent.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/DailyDeathPercent.csv)
+
+Because `location` has entries for each continent and income level, such as "Africa, North America, Low Income, etc.", we use the WHERE clause `continent IS NOT NULL`, which removes these locations and only includes country names in the final result. `ORDER BY 1,2` allows the results to be arranged alphabetically by location and chronologically by date.
 
 ### Query 2
+This examines daily infection levels per country, and creates a percentage of the population that became infected.
+
+```SQL
+SELECT location, date, total_cases, population, (total_cases/population)*100 AS InfectionPercentage
+FROM `portfolioproject-359316.covid19.coviddeaths`
+WHERE continent IS NOT NULL
+  ORDER BY 1, 2
+ ```
+ >Results in repository: [DailyInfectionPercentage.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/DailyInfectionPercentage.csv)
+
+### Query 3
+Query 3 examines the countries with the highest infection rates as a percent of the population.
+
+```SQL
+SELECT location, population, MAX(total_cases) AS HighestInfectionCount, MAX((total_cases/population))*100 AS PercentPopulationInfected
+FROM `portfolioproject-359316.covid19.coviddeaths`
+WHERE continent IS NOT NULL
+  GROUP BY location, population
+  ORDER BY PercentPopulationInfected DESC
+ ```
+ >Results in repository: [CountryInfectionRate.csv](https://github.com/sgbrown29/Covid19DeathsandVaccinations/blob/main/CountryInfectionRate.csv)
+
 
 
